@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriStock — Optimasi Belanja Pangan Rumah Tangga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F2E7;
+    --paper-deep:#EFE7D6;
+    --ink:#1F3326;
+    --pine:#234A33;
+    --pine-deep:#16301F;
+    --wheat:#C98A33;
+    --wheat-deep:#A66D1F;
+    --clay:#A8432F;
+    --line:rgba(31,51,38,0.16);
+    --good:#3D7A4C;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(31,51,38,0.06) 1px, transparent 0);
+    background-size:22px 22px;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px 80px;}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    border-bottom:2px solid var(--ink);
+    padding:46px 0 30px;
+    margin-bottom:8px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--pine);
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:9px;height:9px;background:var(--wheat);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  h1.title{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(34px,5vw,54px);
+    line-height:1.04;
+    margin:0 0 16px;
+    color:var(--pine-deep);
+  }
+  h1.title em{font-style:italic;color:var(--wheat-deep);}
+  p.lede{
+    font-size:17px;
+    line-height:1.6;
+    max-width:620px;
+    color:#3a4a3e;
+    margin:0;
+  }
+  .source-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;}
+  .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    border:1px solid var(--line);
+    padding:5px 10px;
+    border-radius:3px;
+    color:var(--pine);
+    background:rgba(255,255,255,0.5);
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{margin-top:54px;}
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:20px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:12px;
+  }
+  .sec-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--wheat-deep);
+  }
+  .sec-head h2{
+    font-family:'Fraunces',serif;
+    font-size:24px;
+    font-weight:600;
+    margin:0;
+    color:var(--pine-deep);
+  }
+  .sec-sub{font-size:13.5px;color:#5a6b5e;margin:-10px 0 18px;}
+
+  /* ---------- CARD ---------- */
+  .card{
+    background:#fffdf8;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:22px 24px;
+  }
+
+  /* ---------- FAMILY TABLE ---------- */
+  table.members{width:100%;border-collapse:collapse;}
+  table.members th{
+    text-align:left;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:#6b7a6e;
+    font-weight:600;
+    padding:0 8px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  table.members td{padding:7px 8px;vertical-align:middle;}
+  table.members input[type=text], table.members select{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    padding:8px 9px;
+    border:1px solid var(--line);
+    border-radius:5px;
+    background:#fff;
+    color:var(--ink);
+  }
+  table.members input[type=number]{
+    width:64px;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    padding:8px 9px;
+    border:1px solid var(--line);
+    border-radius:5px;
+    background:#fff;
+    text-align:center;
+  }
+  .rm-btn{
+    background:none;border:none;color:var(--clay);
+    cursor:pointer;font-size:18px;line-height:1;padding:4px 8px;
+    border-radius:4px;
+  }
+  .rm-btn:hover{background:rgba(168,67,47,0.1);}
+  .row-actions{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+
+  button.btn{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    padding:11px 20px;
+    border-radius:6px;
+    border:1px solid var(--ink);
+    background:var(--pine);
+    color:#fff;
+    cursor:pointer;
+    transition:transform .12s ease, background .12s ease;
+  }
+  button.btn:hover{background:var(--pine-deep);}
+  button.btn:active{transform:scale(0.98);}
+  button.btn.secondary{
+    background:transparent;
+    color:var(--pine);
+    border:1px solid var(--pine);
+  }
+  button.btn.secondary:hover{background:rgba(35,74,51,0.08);}
+  button.btn.big{
+    width:100%;
+    font-size:15px;
+    padding:15px 20px;
+    background:var(--wheat-deep);
+    border-color:var(--wheat-deep);
+  }
+  button.btn.big:hover{background:#8a5916;}
+
+  /* ---------- NEED SUMMARY ---------- */
+  .need-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-top:18px;
+  }
+  .need-box{
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:14px 16px;
+    background:var(--paper-deep);
+  }
+  .need-box .lab{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:#5a6b5e;
+  }
+  .need-box .val{
+    font-family:'Fraunces',serif;
+    font-size:25px;
+    font-weight:600;
+    color:var(--pine-deep);
+    margin-top:4px;
+  }
+  .need-box .unit{font-size:12px;font-weight:400;color:#7a8a7d;}
+
+  /* ---------- FOOD TABLE ---------- */
+  table.foods{width:100%;border-collapse:collapse;}
+  table.foods th{
+    text-align:left;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:#6b7a6e;
+    font-weight:600;
+    padding:0 8px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  table.foods td{padding:9px 8px;border-bottom:1px solid rgba(31,51,38,0.06);font-size:13.5px;}
+  table.foods td.name{font-weight:600;color:var(--pine-deep);}
+  table.foods td.code{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;color:#8a978c;
+  }
+  table.foods input{
+    width:68px;
+    padding:7px 8px;
+    border:1px solid var(--line);
+    border-radius:5px;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    text-align:right;
+  }
+
+  /* ---------- RESULTS ---------- */
+  .result-banner{
+    display:none;
+    border:1px solid var(--good);
+    background:rgba(61,122,76,0.08);
+    border-radius:7px;
+    padding:14px 18px;
+    margin-bottom:20px;
+    font-size:13.5px;
+    color:var(--pine-deep);
+  }
+  .result-banner.show{display:block;}
+  .result-banner.bad{
+    border-color:var(--clay);
+    background:rgba(168,67,47,0.08);
+    color:#7a2b1c;
+  }
+
+  table.results{width:100%;border-collapse:collapse;margin-top:6px;}
+  table.results th{
+    text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;
+    color:#6b7a6e;font-weight:600;padding:0 8px 10px;border-bottom:1px solid var(--line);
+  }
+  table.results td{padding:10px 8px;border-bottom:1px solid rgba(31,51,38,0.06);font-size:13.5px;}
+  table.results td.name{font-weight:600;color:var(--pine-deep);}
+  table.results tr.total td{
+    font-weight:700;border-top:2px solid var(--ink);border-bottom:none;
+    padding-top:13px;color:var(--pine-deep);
+  }
+  td.num,th.num{text-align:right;}
+
+  .fulfill-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+    margin-top:24px;
+  }
+  .fulfill-item .lab{
+    display:flex;justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;color:#5a6b5e;margin-bottom:6px;
+  }
+  .bar-track{height:9px;background:var(--paper-deep);border-radius:5px;overflow:hidden;border:1px solid var(--line);}
+  .bar-fill{height:100%;background:var(--pine);border-radius:5px 0 0 5px;}
+  .bar-fill.over{background:var(--wheat-deep);}
+
+  .cost-callout{
+    margin-top:28px;
+    display:flex;gap:28px;flex-wrap:wrap;
+    border-top:1px dashed var(--line);
+    padding-top:22px;
+  }
+  .cost-callout .item .lab{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    text-transform:uppercase;letter-spacing:0.06em;color:#5a6b5e;
+  }
+  .cost-callout .item .val{
+    font-family:'Fraunces',serif;font-size:30px;font-weight:700;color:var(--clay);
+  }
+
+  footer{
+    margin-top:64px;padding-top:24px;border-top:2px solid var(--ink);
+    font-size:12px;color:#6b7a6e;line-height:1.7;
+  }
+  footer b{color:var(--pine-deep);}
+
+  @media(max-width:760px){
+    .need-grid{grid-template-columns:repeat(2,1fr);}
+    .fulfill-grid{grid-template-columns:repeat(2,1fr);}
+    table.members thead{display:none;}
+    table.members td{display:block;width:100%;padding:4px 0;}
+    table.members tr{display:block;border-bottom:1px solid var(--line);padding:10px 0;}
+    table.foods{font-size:12px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Aplikasi Simulasi · Linear Programming</div>
+    <h1 class="title">NutriStock — belanja pangan,<br><em>dihitung</em>, bukan ditebak.</h1>
+    <p class="lede">Masukkan profil keluarga, dan NutriStock menghitung kebutuhan gizi mingguan berdasarkan AKG, lalu mencari kombinasi belanja bahan pangan termurah yang memenuhinya — menggunakan data resmi Tabel Komposisi Pangan Indonesia.</p>
+    <div class="source-tags">
+      <span class="tag">AKG · Permenkes RI No. 28/2019</span>
+      <span class="tag">TKPI 2017 · Kemenkes RI</span>
+      <span class="tag">Model · Linear Programming</span>
+    </div>
+  </header>
+
+  <!-- ============ 1. FAMILY PROFILE ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2>Profil Keluarga</h2>
+    </div>
+    <p class="sec-sub">Tambahkan tiap anggota keluarga beserta kelompok umurnya. Kebutuhan energi, protein, lemak, dan karbohidrat dijumlahkan otomatis dari tabel AKG.</p>
+
+    <div class="card">
+      <table class="members" id="memberTable">
+        <thead>
+          <tr>
+            <th style="width:26%">Nama / Peran</th>
+            <th style="width:46%">Kelompok Umur (AKG)</th>
+            <th style="width:14%">Jumlah</th>
+            <th style="width:6%"></th>
+          </tr>
+        </thead>
+        <tbody id="memberBody"></tbody>
+      </table>
+      <div class="row-actions">
+        <button class="btn secondary" onclick="addMemberRow()">+ Tambah Anggota</button>
+      </div>
+
+      <div class="need-grid" id="needGrid">
+        <div class="need-box"><div class="lab">Energi / minggu</div><div class="val" id="needE">–</div></div>
+        <div class="need-box"><div class="lab">Protein / minggu</div><div class="val" id="needP">–</div></div>
+        <div class="need-box"><div class="lab">Lemak / minggu</div><div class="val" id="needL">–</div></div>
+        <div class="need-box"><div class="lab">Karbohidrat / minggu</div><div class="val" id="needK">–</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. FOOD DATA ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2>Bahan Pangan & Harga</h2>
+    </div>
+    <p class="sec-sub">Kandungan gizi per 100 g mengikuti TKPI 2017 (kondisi mentah/segar, dikoreksi %BDD). Sesuaikan harga dan batas pembelian sesuai pasar setempat.</p>
+
+    <div class="card">
+      <table class="foods">
+        <thead>
+          <tr>
+            <th style="width:26%">Bahan Pangan</th>
+            <th class="num">Energi<br>(kkal/100g)</th>
+            <th class="num">Protein<br>(g/100g)</th>
+            <th class="num">Lemak<br>(g/100g)</th>
+            <th class="num">KH<br>(g/100g)</th>
+            <th class="num">BDD<br>(%)</th>
+            <th class="num">Harga<br>(Rp/kg)</th>
+            <th class="num">Min<br>(kg/mg)</th>
+            <th class="num">Maks<br>(kg/mg)</th>
+          </tr>
+        </thead>
+        <tbody id="foodBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 3. OPTIMIZE ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2>Optimasi Belanja</h2>
+    </div>
+    <p class="sec-sub">Model meminimumkan total biaya mingguan, dengan kendala energi/protein/karbohidrat terpenuhi minimum 100%, dan lemak dijaga pada rentang 90–130% kebutuhan.</p>
+
+    <div class="card">
+      <button class="btn big" onclick="runOptimization()">Optimalkan Belanja Mingguan</button>
+
+      <div class="result-banner" id="resultBanner"></div>
+
+      <table class="results" id="resultsTable" style="display:none;">
+        <thead>
+          <tr>
+            <th style="width:30%">Bahan Pangan</th>
+            <th class="num">Berat (kg/mg)</th>
+            <th class="num">Energi (kkal)</th>
+            <th class="num">Protein (g)</th>
+            <th class="num">Biaya (Rp)</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+
+      <div class="fulfill-grid" id="fulfillGrid"></div>
+
+      <div class="cost-callout" id="costCallout"></div>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Sumber data:</b> Angka Kecukupan Gizi — Peraturan Menteri Kesehatan RI No. 28 Tahun 2019. Komposisi pangan — Tabel Komposisi Pangan Indonesia (TKPI) 2017, Direktorat Gizi Masyarakat, Kemenkes RI.</p>
+    <p><b>Catatan:</b> Harga bahan pangan bersifat simulasi dan dapat disesuaikan secara manual. Seluruh perhitungan gizi menggunakan nilai bentuk mentah/segar, dikoreksi dengan persentase Berat Dapat Dimakan (%BDD), agar konsisten dengan berat yang dibeli di pasar.</p>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   DATA: AKG (Permenkes 28/2019) — per orang per hari
+   ============================================================ */
+const AKG_GROUPS = [
+  {key:'0-5bln', label:'0–5 bulan (bayi)', E:550, P:9,  L:31, K:59},
+  {key:'6-11bln',label:'6–11 bulan (bayi)', E:800, P:15, L:35, K:105},
+  {key:'1-3th',  label:'1–3 tahun (anak)',  E:1350,P:20, L:45, K:215},
+  {key:'4-6th',  label:'4–6 tahun (anak)',  E:1400,P:25, L:50, K:220},
+  {key:'7-9th',  label:'7–9 tahun (anak)',  E:1650,P:40, L:55, K:250},
+  {key:'L10-12', label:'10–12 tahun, laki-laki', E:2000,P:50,L:65,K:300},
+  {key:'L13-15', label:'13–15 tahun, laki-laki', E:2400,P:70,L:80,K:350},
+  {key:'L16-18', label:'16–18 tahun, laki-laki', E:2650,P:75,L:85,K:400},
+  {key:'L19-29', label:'19–29 tahun, laki-laki', E:2650,P:65,L:75,K:430},
+  {key:'L30-49', label:'30–49 tahun, laki-laki', E:2550,P:65,L:70,K:415},
+  {key:'L50-64', label:'50–64 tahun, laki-laki', E:2150,P:65,L:60,K:340},
+  {key:'L65-80', label:'65–80 tahun, laki-laki', E:1800,P:64,L:50,K:275},
+  {key:'L80+',   label:'80+ tahun, laki-laki',   E:1600,P:64,L:45,K:235},
+  {key:'P10-12', label:'10–12 tahun, perempuan', E:1900,P:55,L:65,K:280},
+  {key:'P13-15', label:'13–15 tahun, perempuan', E:2050,P:65,L:70,K:300},
+  {key:'P16-18', label:'16–18 tahun, perempuan', E:2100,P:65,L:70,K:300},
+  {key:'P19-29', label:'19–29 tahun, perempuan', E:2250,P:60,L:65,K:360},
+  {key:'P30-49', label:'30–49 tahun, perempuan', E:2150,P:60,L:60,K:340},
+  {key:'P50-64', label:'50–64 tahun, perempuan', E:1800,P:60,L:50,K:280},
+  {key:'P65-80', label:'65–80 tahun, perempuan', E:1550,P:58,L:45,K:230},
+  {key:'P80+',   label:'80+ tahun, perempuan',   E:1400,P:58,L:40,K:200},
+];
+
+/* ============================================================
+   DATA: TKPI 2017 — per 100 g BDD, bentuk mentah/segar
+   ============================================================ */
+const DEFAULT_FOODS = [
+  {name:'Beras giling, mentah',    kode:'AR001', E:357,P:8.4, L:1.7,  K:77.1,BDD:100,harga:10000,min:2.0,max:15.0},
+  {name:'Ayam, daging, segar',     kode:'FR005', E:298,P:18.2,L:25.0, K:0.0, BDD:58, harga:35000,min:0.5,max:3.0},
+  {name:'Tempe kedelai murni',     kode:'CP077', E:201,P:20.8,L:8.8,  K:13.5,BDD:100,harga:20000,min:1.0,max:5.0},
+  {name:'Tahu, mentah',            kode:'CP061', E:80, P:10.9,L:4.7,  K:0.8, BDD:100,harga:12000,min:0.5,max:4.0},
+  {name:'Bayam, segar',            kode:'DR008', E:16, P:0.9, L:0.4,  K:2.9, BDD:71, harga:6000, min:0.5,max:3.0},
+  {name:'Minyak kelapa sawit',     kode:'KR012', E:884,P:0.0, L:100.0,K:0.0, BDD:100,harga:15000,min:0.2,max:2.0},
+];
+
+const DEFAULT_MEMBERS = [
+  {name:'Ayah', group:'L30-49', count:1},
+  {name:'Ibu',  group:'P30-49', count:1},
+  {name:'Anak 1', group:'L13-15', count:1},
+  {name:'Anak 2', group:'7-9th', count:1},
+];
+
+/* ============================================================
+   FAMILY TABLE RENDERING
+   ============================================================ */
+function groupOptionsHTML(selected){
+  return AKG_GROUPS.map(g=>`<option value="${g.key}" ${g.key===selected?'selected':''}>${g.label}</option>`).join('');
+}
+
+function addMemberRow(data){
+  const tbody = document.getElementById('memberBody');
+  const tr = document.createElement('tr');
+  const d = data || {name:'', group:'L19-29', count:1};
+  tr.innerHTML = `
+    <td><input type="text" value="${d.name}" placeholder="mis. Kakek"></td>
+    <td><select>${groupOptionsHTML(d.group)}</select></td>
+    <td><input type="number" min="1" value="${d.count}"></td>
+    <td><button class="rm-btn" onclick="this.closest('tr').remove(); computeNeeds();" title="Hapus">×</button></td>
+  `;
+  tr.querySelectorAll('input,select').forEach(el=> el.addEventListener('input', computeNeeds));
+  tbody.appendChild(tr);
+  computeNeeds();
+}
+
+function getMembers(){
+  return [...document.querySelectorAll('#memberBody tr')].map(tr=>{
+    const cells = tr.querySelectorAll('td');
+    return {
+      name: cells[0].querySelector('input').value,
+      group: cells[1].querySelector('select').value,
+      count: parseFloat(cells[2].querySelector('input').value) || 0
+    };
+  });
+}
+
+let weeklyNeed = {E:0,P:0,L:0,K:0};
+
+function computeNeeds(){
+  const members = getMembers();
+  let E=0,P=0,L=0,K=0;
+  members.forEach(m=>{
+    const g = AKG_GROUPS.find(x=>x.key===m.group);
+    if(!g) return;
+    E += g.E*m.count; P += g.P*m.count; L += g.L*m.count; K += g.K*m.count;
+  });
+  weeklyNeed = {E:E*7, P:P*7, L:L*7, K:K*7};
+  document.getElementById('needE').innerHTML = fmt(weeklyNeed.E)+' <span class="unit">kkal</span>';
+  document.getElementById('needP').innerHTML = fmt(weeklyNeed.P)+' <span class="unit">g</span>';
+  document.getElementById('needL').innerHTML = fmt(weeklyNeed.L)+' <span class="unit">g</span>';
+  document.getElementById('needK').innerHTML = fmt(weeklyNeed.K)+' <span class="unit">g</span>';
+}
+
+function fmt(n){ return Math.round(n).toLocaleString('id-ID'); }
+function fmtRp(n){ return 'Rp' + Math.round(n).toLocaleString('id-ID'); }
+
+/* ============================================================
+   FOOD TABLE RENDERING
+   ============================================================ */
+function renderFoodTable(){
+  const tbody = document.getElementById('foodBody');
+  tbody.innerHTML = '';
+  DEFAULT_FOODS.forEach((f,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="name">${f.name}<br><span class="code">${f.kode}</span></td>
+      <td class="num">${f.E}</td>
+      <td class="num">${f.P}</td>
+      <td class="num">${f.L}</td>
+      <td class="num">${f.K}</td>
+      <td class="num">${f.BDD}</td>
+      <td class="num"><input type="number" step="500" value="${f.harga}" data-i="${i}" data-field="harga"></td>
+      <td class="num"><input type="number" step="0.1" value="${f.min}" data-i="${i}" data-field="min"></td>
+      <td class="num"><input type="number" step="0.1" value="${f.max}" data-i="${i}" data-field="max"></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  tbody.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input', e=>{
+      const i = +e.target.dataset.i, field = e.target.dataset.field;
+      DEFAULT_FOODS[i][field] = parseFloat(e.target.value) || 0;
+    });
+  });
+}
+
+/* ============================================================
+   SIMPLEX SOLVER (Big-M method, standard tableau)
+   minimize c^T x  s.t.  rows of {coef, type ('<='|'>='), rhs}, x>=0
+   ============================================================ */
+function simplexBigM(numVars, c, constraints){
+  const M = 1e7;
+  let slackUsed=0, surplusUsed=0, artUsed=0;
+  const slackCount = constraints.filter(c=>c.type==='<=').length;
+  const surplusCount = constraints.filter(c=>c.type==='>=').length;
+  const artCount = surplusCount; // each >= gets one artificial
+  const idxSlack = numVars;
+  const idxSurplus = numVars + slackCount;
+  const idxArt = numVars + slackCount + surplusCount;
+  const totalVars = numVars + slackCount + surplusCount + artCount;
+  const rows = constraints.length;
+
+  let tableau = [];
+  let basis = [];
+
+  constraints.forEach(con=>{
+    const row = new Array(totalVars+1).fill(0);
+    for(let j=0;j<numVars;j++) row[j] = con.coef[j];
+    if(con.type==='<='){
+      row[idxSlack+slackUsed] = 1;
+      basis.push(idxSlack+slackUsed);
+      slackUsed++;
+    } else { // '>='
+      row[idxSurplus+surplusUsed] = -1;
+      row[idxArt+artUsed] = 1;
+      basis.push(idxArt+artUsed);
+      surplusUsed++; artUsed++;
+    }
+    row[totalVars] = con.rhs;
+    tableau.push(row);
+  });
+
+  const cost = new Array(totalVars).fill(0);
+  for(let j=0;j<numVars;j++) cost[j] = c[j];
+  for(let j=idxArt;j<idxArt+artCount;j++) cost[j] = M;
+
+  function reducedCosts(){
+    const z = new Array(totalVars+1).fill(0);
+    for(let j=0;j<=totalVars;j++){
+      let sum=0;
+      for(let i=0;i<rows;i++) sum += cost[basis[i]] * tableau[i][j];
+      z[j]=sum;
+    }
+    return z;
+  }
+
+  let iter=0;
+  while(iter<2000){
+    iter++;
+    const z = reducedCosts();
+    let enter=-1, best=-1e-6;
+    for(let j=0;j<totalVars;j++){
+      const rc = cost[j]-z[j];
+      if(rc<best){ best=rc; enter=j; }
+    }
+    if(enter===-1) break;
+    let leave=-1, minRatio=Infinity;
+    for(let i=0;i<rows;i++){
+      if(tableau[i][enter] > 1e-9){
+        const ratio = tableau[i][totalVars]/tableau[i][enter];
+        if(ratio < minRatio - 1e-9){ minRatio=ratio; leave=i; }
+      }
+    }
+    if(leave===-1) return {feasible:false, unbounded:true};
+    const pivot = tableau[leave][enter];
+    for(let j=0;j<=totalVars;j++) tableau[leave][j] /= pivot;
+    for(let i=0;i<rows;i++){
+      if(i!==leave && Math.abs(tableau[i][enter])>1e-12){
+        const f = tableau[i][enter];
+        for(let j=0;j<=totalVars;j++) tableau[i][j] -= f*tableau[leave][j];
+      }
+    }
+    basis[leave] = enter;
+  }
+
+  for(let i=0;i<rows;i++){
+    if(basis[i] >= idxArt && tableau[i][totalVars] > 1e-6) return {feasible:false};
+  }
+
+  const x = new Array(numVars).fill(0);
+  for(let i=0;i<rows;i++){ if(basis[i] < numVars) x[basis[i]] = tableau[i][totalVars]; }
+  let obj=0; for(let j=0;j<numVars;j++) obj += c[j]*x[j];
+  return {feasible:true, x, obj};
+}
+
+/* ============================================================
+   BUILD & SOLVE NUTRISTOCK LP
+   variables y_j = x_j - min_j  (so 0 <= y_j <= max_j-min_j)
+   ============================================================ */
+function runOptimization(){
+  computeNeeds();
+  const n = DEFAULT_FOODS.length;
+  const foods = DEFAULT_FOODS;
+
+  // nutrient per kg (BDD-corrected)
+  const perKg = foods.map(f=>({
+    E: f.E*10*(f.BDD/100),
+    P: f.P*10*(f.BDD/100),
+    L: f.L*10*(f.BDD/100),
+    K: f.K*10*(f.BDD/100),
+  }));
+
+  // constants from minimum purchase (lb) already "consumed"
+  let baseE=0, baseP=0, baseL=0, baseK=0, baseCost=0;
+  foods.forEach((f,i)=>{
+    baseE += perKg[i].E*f.min;
+    baseP += perKg[i].P*f.min;
+    baseL += perKg[i].L*f.min;
+    baseK += perKg[i].K*f.min;
+    baseCost += f.harga*f.min;
+  });
+
+  const needE = weeklyNeed.E - baseE;
+  const needP = weeklyNeed.P - baseP;
+  const needK = weeklyNeed.K - baseK;
+  const needLmin = 0.9*weeklyNeed.L - baseL;
+  const needLmax = 1.3*weeklyNeed.L - baseL;
+
+  const c = foods.map(f=>f.harga);
+  const constraints = [
+    {coef: perKg.map(p=>p.E), type:'>=', rhs: needE},
+    {coef: perKg.map(p=>p.P), type:'>=', rhs: needP},
+    {coef: perKg.map(p=>p.K), type:'>=', rhs: needK},
+    {coef: perKg.map(p=>p.L), type:'>=', rhs: needLmin},
+    {coef: perKg.map(p=>p.L), type:'<=', rhs: Math.max(needLmax,0)},
+  ];
+  // upper bound per food: y_j <= max_j - min_j
+  foods.forEach((f,i)=>{
+    const row = new Array(n).fill(0); row[i]=1;
+    constraints.push({coef: row, type:'<=', rhs: Math.max(f.max-f.min,0)});
+  });
+
+  const res = simplexBigM(n, c, constraints);
+  const banner = document.getElementById('resultBanner');
+  const table = document.getElementById('resultsTable');
+
+  if(!res.feasible){
+    banner.className = 'result-banner show bad';
+    banner.innerHTML = 'Tidak ditemukan solusi yang memenuhi seluruh kendala gizi dengan batas pembelian saat ini. Coba naikkan batas maksimum salah satu bahan pangan, atau periksa kembali jumlah anggota keluarga.';
+    table.style.display='none';
+    document.getElementById('fulfillGrid').innerHTML='';
+    document.getElementById('costCallout').innerHTML='';
+    return;
+  }
+
+  const x = foods.map((f,i)=> f.min + res.x[i]); // actual kg purchased
+  let totE=0, totP=0, totL=0, totK=0, totCost=0;
+  const tbody = document.getElementById('resultsBody');
+  tbody.innerHTML='';
+  foods.forEach((f,i)=>{
+    const e = perKg[i].E*x[i], p = perKg[i].P*x[i], l = perKg[i].L*x[i], k = perKg[i].K*x[i];
+    const cost = f.harga*x[i];
+    totE+=e; totP+=p; totL+=l; totK+=k; totCost+=cost;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="name">${f.name}</td><td class="num">${x[i].toFixed(2)}</td>
+      <td class="num">${fmt(e)}</td><td class="num">${p.toFixed(1)}</td><td class="num">${fmtRp(cost)}</td>`;
+    tbody.appendChild(tr);
+  });
+  const trTotal = document.createElement('tr');
+  trTotal.className='total';
+  trTotal.innerHTML = `<td>Total</td><td class="num">${x.reduce((a,b)=>a+b,0).toFixed(2)}</td>
+    <td class="num">${fmt(totE)}</td><td class="num">${totP.toFixed(1)}</td><td class="num">${fmtRp(totCost)}</td>`;
+  tbody.appendChild(trTotal);
+  table.style.display='table';
+
+  banner.className = 'result-banner show';
+  banner.innerHTML = `Solusi optimal ditemukan — seluruh kebutuhan energi, protein, dan karbohidrat terpenuhi minimum 100%, dengan lemak terjaga pada rentang aman.`;
+
+  // fulfillment bars
+  const grid = document.getElementById('fulfillGrid');
+  const items = [
+    {lab:'Energi', val:totE, need:weeklyNeed.E},
+    {lab:'Protein', val:totP, need:weeklyNeed.P},
+    {lab:'Lemak', val:totL, need:weeklyNeed.L},
+    {lab:'Karbohidrat', val:totK, need:weeklyNeed.K},
+  ];
+  grid.innerHTML = items.map(it=>{
+    const pct = weeklyNeed.E>0 ? (it.val/it.need*100) : 0;
+    const w = Math.min(pct,150);
+    return `<div class="fulfill-item">
+      <div class="lab"><span>${it.lab}</span><span>${pct.toFixed(1)}%</span></div>
+      <div class="bar-track"><div class="bar-fill ${pct>110?'over':''}" style="width:${Math.min(w,100)}%"></div></div>
+    </div>`;
+  }).join('');
+
+  // cost callout
+  const cc = document.getElementById('costCallout');
+  cc.innerHTML = `
+    <div class="item"><div class="lab">Biaya / minggu</div><div class="val">${fmtRp(totCost)}</div></div>
+    <div class="item"><div class="lab">Biaya / bulan (×4,3)</div><div class="val">${fmtRp(totCost*4.3)}</div></div>
+    <div class="item"><div class="lab">Per kapita / hari</div><div class="val">${fmtRp(totCost/7/Math.max(getMembers().reduce((a,m)=>a+m.count,0),1))}</div></div>
+  `;
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+DEFAULT_MEMBERS.forEach(m=>addMemberRow(m));
+renderFoodTable();
+computeNeeds();
+</script>
+</body>
+</html>
